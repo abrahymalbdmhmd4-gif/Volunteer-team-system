@@ -1,0 +1,929 @@
+{
+  "name": "Data Base of Myameen Team",
+  "nodes": [
+    {
+      "parameters": {
+        "amount": 10
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        96,
+        32
+      ],
+      "id": "a0ab92c8-1bbc-426c-8d2e-0bbb97e0c2a7",
+      "name": "Wait",
+      "webhookId": "128a1513-a312-4af6-9969-4273d167dcc3",
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -352,
+        112
+      ],
+      "id": "4538fd6a-e47b-4b09-8a52-e9fee34baa95",
+      "name": "Loop Over Items",
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "=1067IidZubijS0FD0LoGDQbbMFBeD0q3ZIVIw-KpIMfU",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1793760551,
+          "mode": "list",
+          "cachedResultName": "ردود النموذج 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1067IidZubijS0FD0LoGDQbbMFBeD0q3ZIVIw-KpIMfU/edit#gid=1793760551"
+        },
+        "event": "rowAdded",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1024,
+        112
+      ],
+      "id": "5ea14669-a399-4955-a0b6-be0dd9a9283b",
+      "name": "Read the form sheet",
+      "notesInFlow": false,
+      "retryOnFail": true,
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "ccwXfJPkcoTsJ6hl",
+          "name": "Google Sheets Trigger account"
+        }
+      },
+      "notes": "دور هذه العقدة هو الاستماع لنموذج الفورم الذي سيتم تعبئته وتمرير بيانات الطالب الجديد فورا "
+    },
+    {
+      "parameters": {
+        "operation": "copy",
+        "fileId": {
+          "__rl": true,
+          "value": "13SV7xetSymIL1W8xKTYsFBW2u3SwD76wsmU3t2asNQU",
+          "mode": "list",
+          "cachedResultName": "القالب ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/13SV7xetSymIL1W8xKTYsFBW2u3SwD76wsmU3t2asNQU/edit?usp=drivesdk"
+        },
+        "name": "=سجل-المهام-{{ $('Is it not done ?').item.json[\"الاسم الكامل \"] }}",
+        "sameFolder": false,
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1dRnx7o6RFgcFh4ourHTZ8MPbTs8yyGFO",
+          "mode": "list",
+          "cachedResultName": "سجلات المتطوعين 2026-2027 [اداري-خاص]",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1dRnx7o6RFgcFh4ourHTZ8MPbTs8yyGFO"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -128,
+        32
+      ],
+      "id": "84d196dc-34f2-4a3d-bb5d-3fcb3e8ef44a",
+      "name": "Copy template & Rename",
+      "retryOnFail": true,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "80xp042dTY2nZyBV",
+          "name": "Google Drive account"
+        }
+      },
+      "notes": "تقوم بنسخ القالب الجديد مع اضافة اسم ومعلومات الطال الجديد ووضعه في مجلد الطلا على درايف اي هذه العقدة ستجمع بين الانشاء و الحفظ على درايف بان واحد "
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "الورقة1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1HuUAYpzMYi-FEQ6FX8gOxtktHNnslye0SXEnXOpyIzQ/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "اسم الطالب ": "={{ $('Read the form sheet').item.json[\"الاسم الكامل \"] }}",
+            "معرف التلغرام  ": "={{ $('Edit Fields').item.json[\"@Sythic999\"] }}",
+            "المادة و الدور فيها": "={{ $('Read the form sheet').item.json[\"ماهي المواد التي تستطيع التطوع بها ؟ \"] }} / {{ $('Read the form sheet').item.json[\"ماهو الدور الذي تفضل التطوع به في الفريق؟ \"] }} / {{ $('Read the form sheet').item.json[\"ماهو الدور الذي تفضل التطوع به في الفريق في المادة الثانية التي اخترتها ؟ \"] }}"
+          },
+          "matchingColumns": [
+            "اسم الطالب "
+          ],
+          "schema": [
+            {
+              "id": "اسم الطالب ",
+              "displayName": "اسم الطالب ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "معرف التلغرام  ",
+              "displayName": "معرف التلغرام  ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "المادة و الدور فيها",
+              "displayName": "المادة و الدور فيها",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "المهمة ",
+              "displayName": "المهمة ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "رقم المحاضرة ",
+              "displayName": "رقم المحاضرة ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "هل كان تأخير في النشر ",
+              "displayName": "هل كان تأخير في النشر ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "حالة المهمة ",
+              "displayName": "حالة المهمة ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "الملاحظات ",
+              "displayName": "الملاحظات ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "تقييم المشرف ",
+              "displayName": "تقييم المشرف ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "النقاط المستحقة",
+              "displayName": "النقاط المستحقة",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Task ID",
+              "displayName": "Task ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "اجمالي النقاط ",
+              "displayName": "اجمالي النقاط ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "0",
+              "displayName": "0",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        320,
+        32
+      ],
+      "id": "40574d6c-0e1d-4b6b-a5cd-27f78a0caf77",
+      "name": "Append row in new template",
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ZlndbaTPQNsXbUSh",
+          "name": "Google Sheets account"
+        }
+      },
+      "notes": "هذه العقدة ستفتح ساثثف الطالب الجديد باستخدام معرف الملف من الخطوة السابقة وتعبئة اسطر معلومات الطالب ببياناته الحقيقية "
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1067IidZubijS0FD0LoGDQbbMFBeD0q3ZIVIw-KpIMfU",
+          "mode": "list",
+          "cachedResultName": "استمارة تسجيل وتوثيق المهام الاكاديمية | فريق ميامين -  قسم المحتوى العلمي 2026-2027 (الردود)",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1067IidZubijS0FD0LoGDQbbMFBeD0q3ZIVIw-KpIMfU/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1793760551,
+          "mode": "list",
+          "cachedResultName": "ردود النموذج 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1067IidZubijS0FD0LoGDQbbMFBeD0q3ZIVIw-KpIMfU/edit#gid=1793760551"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "status": "=Done",
+            "الاسم الكامل ": "={{$('Read the form sheet').item.json['الاسم الكامل ']}}",
+            "row_number": 0
+          },
+          "matchingColumns": [
+            "الاسم الكامل "
+          ],
+          "schema": [
+            {
+              "id": "طابع زمني",
+              "displayName": "طابع زمني",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "الاسم الكامل ",
+              "displayName": "الاسم الكامل ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "معرف التلغرام Telegram ID",
+              "displayName": "معرف التلغرام Telegram ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "هل تطوعت معنا سابقا؟ ",
+              "displayName": "هل تطوعت معنا سابقا؟ ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "هل تملك لابتوب؟ ",
+              "displayName": "هل تملك لابتوب؟ ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "هل تجيد العمل على تطبيقات Microsoft office ؟ ",
+              "displayName": "هل تجيد العمل على تطبيقات Microsoft office ؟ ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "هل لديك خبرة او معرفة في مجالات التصميم الجرافيكي؟",
+              "displayName": "هل لديك خبرة او معرفة في مجالات التصميم الجرافيكي؟",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "هل تجيد العمل على احدى لغات البرمجة التالية؟ ",
+              "displayName": "هل تجيد العمل على احدى لغات البرمجة التالية؟ ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "هل لديك خبرة باحدى المجالات الاتية (ولو كانت ضعيفة)؟ ",
+              "displayName": "هل لديك خبرة باحدى المجالات الاتية (ولو كانت ضعيفة)؟ ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "حدد سنتك الدراسية: ",
+              "displayName": "حدد سنتك الدراسية: ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ماهي المواد التي تستطيع التطوع بها ؟ ",
+              "displayName": "ماهي المواد التي تستطيع التطوع بها ؟ ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ماهو الدور الذي تفضل التطوع به في الفريق؟ ",
+              "displayName": "ماهو الدور الذي تفضل التطوع به في الفريق؟ ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ماهو الدور الذي تفضل التطوع به في الفريق في المادة الثانية التي اخترتها ؟ ",
+              "displayName": "ماهو الدور الذي تفضل التطوع به في الفريق في المادة الثانية التي اخترتها ؟ ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ماهي المواد التي تستطيع التطوع بها ؟ ",
+              "displayName": "ماهي المواد التي تستطيع التطوع بها ؟ ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ماهو الدور الذي تفضل التطوع به للفريق؟ ",
+              "displayName": "ماهو الدور الذي تفضل التطوع به للفريق؟ ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ماهو الدور الذي تفضل التطوع به للفريق للمادة الثانية التي اخترتها؟ ",
+              "displayName": "ماهو الدور الذي تفضل التطوع به للفريق للمادة الثانية التي اخترتها؟ ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ماهي المواد التي تستطيع التطوع بها ؟ ",
+              "displayName": "ماهي المواد التي تستطيع التطوع بها ؟ ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ماهو الدور الذي تفضل التطوع به للفريق؟",
+              "displayName": "ماهو الدور الذي تفضل التطوع به للفريق؟",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ماهو الدور الذي تفضل التطوع به للفريق للمادة الثانية التي اخترتها؟",
+              "displayName": "ماهو الدور الذي تفضل التطوع به للفريق للمادة الثانية التي اخترتها؟",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ماهي المواد التي تستطيع التطوع بها ؟ ",
+              "displayName": "ماهي المواد التي تستطيع التطوع بها ؟ ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ماهو الدور الذي تفضل التطوع به للفريق؟",
+              "displayName": "ماهو الدور الذي تفضل التطوع به للفريق؟",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ماهو الدور الذي تفضل التطوع به للفريق في المادة الثانية التي اخترتها ؟",
+              "displayName": "ماهو الدور الذي تفضل التطوع به للفريق في المادة الثانية التي اخترتها ؟",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ماهي المواد التي تستطيع التطوع بها ؟ ",
+              "displayName": "ماهي المواد التي تستطيع التطوع بها ؟ ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ماهو الدور الذي تفضل التطوع به للفريق؟",
+              "displayName": "ماهو الدور الذي تفضل التطوع به للفريق؟",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ماهو الدور الذي تفضل التطوع به للفريق للمادة الثانية التي اخترت التطوع بها ؟",
+              "displayName": "ماهو الدور الذي تفضل التطوع به للفريق للمادة الثانية التي اخترت التطوع بها ؟",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        768,
+        112
+      ],
+      "id": "04b0a91c-6bd7-4c77-b66b-73a1a1ff7a71",
+      "name": "Write done",
+      "retryOnFail": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ZlndbaTPQNsXbUSh",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1Vlf4Sn-5L8WD6SpJd74ZJycp9gisStFZycpBhoMP-9M",
+          "mode": "list",
+          "cachedResultName": "سجل المعرفات - IDs",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Vlf4Sn-5L8WD6SpJd74ZJycp9gisStFZycpBhoMP-9M/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "الورقة1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Vlf4Sn-5L8WD6SpJd74ZJycp9gisStFZycpBhoMP-9M/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "اسم الطالب ": "={{ $('Read the form sheet').item.json[\"الاسم الكامل \"] }}",
+            "السنة الدراسية ": "={{ $('Read the form sheet').item.json[\"حدد سنتك الدراسية: \"] }}",
+            "معرف sheet": "={{ $('Copy template & Rename').item.json.id }}",
+            "معرف التلغرام ": "={{ $json[\"معرف التلغرام  \"] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "اسم الطالب ",
+              "displayName": "اسم الطالب ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "السنة الدراسية ",
+              "displayName": "السنة الدراسية ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "معرف sheet",
+              "displayName": "معرف sheet",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "معرف التلغرام ",
+              "displayName": "معرف التلغرام ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        544,
+        32
+      ],
+      "id": "566b0e54-fc4d-4f6e-b904-2921023c9762",
+      "name": "Append row in IDs sheet",
+      "retryOnFail": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ZlndbaTPQNsXbUSh",
+          "name": "Google Sheets account"
+        }
+      },
+      "notes": "هذه العقدة تقوم بارسال معرف الطالب على التلغرام وربطه بمعرف جدول االانجازات للطالب "
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "03617e47-66c2-494f-bca6-9ea9f648cb10",
+              "leftValue": "={{ $json.status}}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -800,
+        112
+      ],
+      "id": "c7c46254-5e65-4615-87e7-770986e7592a",
+      "name": "Is it not done ?",
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "content": "Student Onboarding & Status Verification\n",
+        "height": 240,
+        "width": 368
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1056,
+        32
+      ],
+      "id": "b79a1732-ff3a-4f9b-b9fe-cc1b48901cd7",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "Student Sheet Setup",
+        "height": 240,
+        "width": 624,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -176,
+        -48
+      ],
+      "id": "48bc8097-bfcb-4940-8658-7e344db2ea5a",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "Add to ID Master Sheet",
+        "height": 240,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        480,
+        -48
+      ],
+      "id": "f5d26cd7-582f-4b96-831d-ff243876e64c",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "Update status to \"Done\"",
+        "height": 224,
+        "width": 150,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        752,
+        48
+      ],
+      "id": "713b9448-3df4-4238-bfc1-34566642f660",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e60c8398-8b73-4a7e-b93f-cd246b7d6fec",
+              "name": "={{ $json[\"معرف التلغرام Telegram ID\"] }}",
+              "value": "={{ $json['معرف التلغرام Telegram ID'].replace(/@/g, '') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -576,
+        112
+      ],
+      "id": "a351995a-a483-4d4d-b2cd-25186719f054",
+      "name": "Edit Fields",
+      "retryOnFail": true
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Append row in new template",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Copy template & Rename",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read the form sheet": {
+      "main": [
+        [
+          {
+            "node": "Is it not done ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Copy template & Rename": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in new template": {
+      "main": [
+        [
+          {
+            "node": "Append row in IDs sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write done": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in IDs sheet": {
+      "main": [
+        [
+          {
+            "node": "Write done",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is it not done ?": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "errorWorkflow": "BwhUh9P1ZooDmHvF"
+  },
+  "versionId": "3cafd8f0-60e3-48e9-85d2-c064bdf50876",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "32315b50c4f1bd068ad6665008609f971133fa2270775ea30a3ec8446bd8943e"
+  },
+  "id": "x7tiRslLIDgkPkRF",
+  "tags": [
+    {
+      "updatedAt": "2026-09-16T16:52:28.188Z",
+      "createdAt": "2026-09-16T16:52:28.188Z",
+      "id": "9Mn2nrTYMCCisQet",
+      "name": "team"
+    },
+    {
+      "updatedAt": "2026-09-16T16:51:57.325Z",
+      "createdAt": "2026-09-16T16:51:57.325Z",
+      "id": "F1QJYnQY4vDgL6Pi",
+      "name": "telegram"
+    },
+    {
+      "updatedAt": "2026-09-16T16:52:11.590Z",
+      "createdAt": "2026-09-16T16:52:11.590Z",
+      "id": "h8Be99SlCk2njUvY",
+      "name": "google sheet"
+    }
+  ]
+}

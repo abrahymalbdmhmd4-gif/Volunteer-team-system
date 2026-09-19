@@ -1,0 +1,1274 @@
+{
+  "name": "Myameen Student Evaluation Bot (MSEB)",
+  "nodes": [
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "d96e17f6-66c7-4b97-9e38-761295ba79fe",
+              "leftValue": "={{ $json.callback_query.data }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -576,
+        1360
+      ],
+      "id": "5a9126f5-830c-4dd2-8251-46cbdd3bf9c1",
+      "name": "Callback query ?",
+      "retryOnFail": true,
+      "notes": "تقوم هذه العقدة بفحص الحدث في التلغرام اذا كان رسالة عادية ام ضغطة زر و يوجهه للمكان الصحيح "
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1Vlf4Sn-5L8WD6SpJd74ZJycp9gisStFZycpBhoMP-9M",
+          "mode": "list",
+          "cachedResultName": "سجل المعرفات - IDs",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Vlf4Sn-5L8WD6SpJd74ZJycp9gisStFZycpBhoMP-9M/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "الورقة1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Vlf4Sn-5L8WD6SpJd74ZJycp9gisStFZycpBhoMP-9M/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "معرف التلغرام ",
+              "lookupValue": "={{ $json.message.from.username }}"
+            }
+          ]
+        },
+        "options": {
+          "returnFirstMatch": true
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -352,
+        1456
+      ],
+      "id": "e317897f-4a8f-4dfa-91d9-359786238638",
+      "name": "Get the student's sheet",
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ZlndbaTPQNsXbUSh",
+          "name": "Google Sheets account"
+        }
+      },
+      "notes": "هذه العقدة تحضر لنا معرف شيت الطالب المرتبط بشيت التلغرام الذي حصلنا عليه من معلومات الرسالة "
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Callback query ?').item.json.message.chat.id }}",
+        "text": "نحن نعتذر منك انت لست متطوع بالفريق ",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        96,
+        1360
+      ],
+      "id": "81e1e59f-dd7f-417e-8910-f765084ea055",
+      "name": "Send a text message1",
+      "webhookId": "5234981f-3482-43b1-ac62-0ce461bf8c0e",
+      "retryOnFail": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "ranUmHUIOQ01oUQl",
+          "name": "Myameen_bot"
+        }
+      },
+      "notes": "تقوم هذه العقدة بارسال رسالة للطالب الغير موجود بالفريق "
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "=اهلا وسهلا {{ $('Telegram Trigger').item.json.message.from.first_name }}, ماهي حالة المهمة التي تعمل عليها؟ ",
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "تمت بنجاح ",
+                    "additionalFields": {
+                      "callback_data": "done"
+                    }
+                  },
+                  {
+                    "text": "لم تتم بعد ",
+                    "additionalFields": {
+                      "callback_data": "not done"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        544,
+        784
+      ],
+      "id": "46b69f6b-2295-4200-8124-b1100861c4cd",
+      "name": "Mission Status",
+      "webhookId": "5234981f-3482-43b1-ac62-0ce461bf8c0e",
+      "retryOnFail": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "ranUmHUIOQ01oUQl",
+          "name": "Myameen_bot"
+        }
+      },
+      "notes": "تقوم هذه العقدة بارسال اول رسالة وهي عن حالة المهمة "
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.callback_query.message.chat.id }}",
+        "text": "ماهي المهمة التي قمت بالعمل عليها ؟ ",
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "كتابة مسودة",
+                    "additionalFields": {
+                      "callback_data": "كتابة مسودة"
+                    }
+                  },
+                  {
+                    "text": "تدقيق",
+                    "additionalFields": {
+                      "callback_data": "تدقيق"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "تصميم ",
+                    "additionalFields": {
+                      "callback_data": "تصميم "
+                    }
+                  },
+                  {
+                    "text": "كاتب دورات ",
+                    "additionalFields": {
+                      "callback_data": "كاتب دورات "
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "تنضيد / كتابة مبيضة",
+                    "additionalFields": {
+                      "callback_data": "تنضيد / كتابة مبيضة"
+                    }
+                  },
+                  {
+                    "text": "مدقق علمي",
+                    "additionalFields": {
+                      "callback_data": "مدقق علمي"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "منتج فيديوهات",
+                    "additionalFields": {
+                      "callback_data": "منتج فيديوهات"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        544,
+        976
+      ],
+      "id": "0ca17fd3-5e1f-4432-880d-4dc07785f4cf",
+      "name": "Mission type",
+      "webhookId": "5234981f-3482-43b1-ac62-0ce461bf8c0e",
+      "retryOnFail": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "ranUmHUIOQ01oUQl",
+          "name": "Myameen_bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message",
+          "callback_query"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -800,
+        1360
+      ],
+      "id": "7783b5f0-c37f-467e-9055-76b45090f598",
+      "name": "Telegram Trigger",
+      "webhookId": "a79f950e-0fbe-4218-bcbc-12a37a50f9a5",
+      "credentials": {
+        "telegramApi": {
+          "id": "ranUmHUIOQ01oUQl",
+          "name": "Myameen_bot"
+        }
+      },
+      "notes": "تقوم هذه العقدة بتحسس اي رسالة تلغرام "
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.stage }}",
+                    "rightValue": 0,
+                    "operator": {
+                      "type": "number",
+                      "operation": "equals"
+                    },
+                    "id": "cf51eb4f-95a6-455d-8835-250c31a8f95e"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "97db0ef2-cbba-4e28-b4f3-dd935a7546f5",
+                    "leftValue": "={{ $json.stage }}",
+                    "rightValue": 1,
+                    "operator": {
+                      "type": "number",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "ca2d2a71-8ccb-40ae-8c0d-73ef99aaffb8",
+                    "leftValue": "={{ $json.stage }}",
+                    "rightValue": 2,
+                    "operator": {
+                      "type": "number",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "e49ca81c-f1f0-4768-98ef-ef2d55033e73",
+                    "leftValue": "={{ $json.stage }}",
+                    "rightValue": 3,
+                    "operator": {
+                      "type": "number",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "44974cf8-be09-4a5e-b265-af5574006c18",
+                    "leftValue": "={{ $json.stage }}",
+                    "rightValue": 4,
+                    "operator": {
+                      "type": "number",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        320,
+        1120
+      ],
+      "id": "e7c9c0ef-f9cd-4efb-913b-fc560571c2c0",
+      "name": "Defining the stage",
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.callback_query.message.chat.id }}",
+        "text": "ماهو رقم المحاضرة الذي تم العمل عليها؟ ",
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "1",
+                    "additionalFields": {
+                      "callback_data": "1"
+                    }
+                  },
+                  {
+                    "text": "2",
+                    "additionalFields": {
+                      "callback_data": "2"
+                    }
+                  },
+                  {
+                    "text": "3",
+                    "additionalFields": {
+                      "callback_data": "3"
+                    }
+                  },
+                  {
+                    "text": "4",
+                    "additionalFields": {
+                      "callback_data": "4"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "5",
+                    "additionalFields": {
+                      "callback_data": "5"
+                    }
+                  },
+                  {
+                    "text": "6",
+                    "additionalFields": {
+                      "callback_data": "6"
+                    }
+                  },
+                  {
+                    "text": "7",
+                    "additionalFields": {
+                      "callback_data": "7"
+                    }
+                  },
+                  {
+                    "text": "8",
+                    "additionalFields": {
+                      "callback_data": "8"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "9",
+                    "additionalFields": {
+                      "callback_data": "9"
+                    }
+                  },
+                  {
+                    "text": "10",
+                    "additionalFields": {
+                      "callback_data": "10"
+                    }
+                  },
+                  {
+                    "text": "11",
+                    "additionalFields": {
+                      "callback_data": "11"
+                    }
+                  },
+                  {
+                    "text": "12",
+                    "additionalFields": {
+                      "callback_data": "12"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "13",
+                    "additionalFields": {
+                      "callback_data": "13"
+                    }
+                  },
+                  {
+                    "text": "14",
+                    "additionalFields": {
+                      "callback_data": "14"
+                    }
+                  },
+                  {
+                    "text": "15",
+                    "additionalFields": {
+                      "callback_data": "15"
+                    }
+                  },
+                  {
+                    "text": "16",
+                    "additionalFields": {
+                      "callback_data": "16"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "17",
+                    "additionalFields": {
+                      "callback_data": "17"
+                    }
+                  },
+                  {
+                    "text": "18",
+                    "additionalFields": {
+                      "callback_data": "18"
+                    }
+                  },
+                  {
+                    "text": "19",
+                    "additionalFields": {
+                      "callback_data": "19"
+                    }
+                  },
+                  {
+                    "text": "20",
+                    "additionalFields": {
+                      "callback_data": "20"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        544,
+        1168
+      ],
+      "id": "4c497e71-1f12-448f-a32f-62ad54adb331",
+      "name": "Lecture Number",
+      "webhookId": "5234981f-3482-43b1-ac62-0ce461bf8c0e",
+      "retryOnFail": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "ranUmHUIOQ01oUQl",
+          "name": "Myameen_bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.callback_query.message.chat.id }}",
+        "text": " هل كان هناك تاخير بتسليم المهمة للمتطوع الذي يليك (هل تجاوز اليومان )؟",
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "نعم",
+                    "additionalFields": {
+                      "callback_data": "yes"
+                    }
+                  },
+                  {
+                    "text": "لا",
+                    "additionalFields": {
+                      "callback_data": "No"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        544,
+        1360
+      ],
+      "id": "514fad33-4099-4ae6-84d6-dd852514fa88",
+      "name": "A delay?",
+      "webhookId": "5234981f-3482-43b1-ac62-0ce461bf8c0e",
+      "retryOnFail": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "ranUmHUIOQ01oUQl",
+          "name": "Myameen_bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.callback_query.message.chat.id }}",
+        "text": "تم التسجيل بنجاح ",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        992,
+        1552
+      ],
+      "id": "82edced2-ce46-4606-a29a-647f5ba9251b",
+      "name": "Mission accomplished",
+      "webhookId": "5234981f-3482-43b1-ac62-0ce461bf8c0e",
+      "retryOnFail": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "ranUmHUIOQ01oUQl",
+          "name": "Myameen_bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "39bce96f-8678-4b5b-84fd-dd27b453409c",
+              "leftValue": "={{ $json[\"معرف sheet\"] }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -128,
+        1360
+      ],
+      "id": "9732f627-89ec-4459-a455-fe83a624c97e",
+      "name": "exist ?",
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $json[\"معرف sheet\"] }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "الورقة1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Coz6psfn0xgJzUj564Zt3-k-V4Q5rzLjHW3p7VGLOF4/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "اسم الطالب ": "={{ $json[\"اسم الطالب \"] }}",
+            "معرف التلغرام  ": "={{ $json[\"معرف التلغرام \"] }}",
+            "المهمة ": "={{ $('Code in JavaScript').item.json.task_type }}",
+            "هل كان تأخير في النشر ": "={{ $('Code in JavaScript').item.json.delay }}",
+            "المادة و الدور فيها": "",
+            "حالة المهمة ": "= {{ $('Code in JavaScript').item.json.task_status }}",
+            "رقم المحاضرة ": "={{ $('Code in JavaScript').item.json.lecture_number }}"
+          },
+          "matchingColumns": [
+            "اسم الطالب "
+          ],
+          "schema": [
+            {
+              "id": "اسم الطالب ",
+              "displayName": "اسم الطالب ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "معرف التلغرام  ",
+              "displayName": "معرف التلغرام  ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "المادة و الدور فيها",
+              "displayName": "المادة و الدور فيها",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "المهمة ",
+              "displayName": "المهمة ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "رقم المحاضرة ",
+              "displayName": "رقم المحاضرة ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "هل كان تأخير في النشر ",
+              "displayName": "هل كان تأخير في النشر ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "حالة المهمة ",
+              "displayName": "حالة المهمة ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "الملاحظات ",
+              "displayName": "الملاحظات ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "تقييم المشرف ",
+              "displayName": "تقييم المشرف ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "النقاط المستحقة",
+              "displayName": "النقاط المستحقة",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Task ID",
+              "displayName": "Task ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "اجمالي النقاط ",
+              "displayName": "اجمالي النقاط ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "0",
+              "displayName": "0",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        768,
+        1552
+      ],
+      "id": "26ffb193-caba-4a56-bcea-16e7c726e56e",
+      "name": "Append the student's sheet3",
+      "retryOnFail": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ZlndbaTPQNsXbUSh",
+          "name": "Google Sheets account"
+        }
+      },
+      "notes": "تقوم هذه العقدة بتحديث شيت الطالب  وتضع به الجواب على حالة المهمة "
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1Vlf4Sn-5L8WD6SpJd74ZJycp9gisStFZycpBhoMP-9M",
+          "mode": "list",
+          "cachedResultName": "سجل المعرفات - IDs",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Vlf4Sn-5L8WD6SpJd74ZJycp9gisStFZycpBhoMP-9M/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "الورقة1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Vlf4Sn-5L8WD6SpJd74ZJycp9gisStFZycpBhoMP-9M/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "معرف التلغرام ",
+              "lookupValue": "={{ $('Telegram Trigger').item.json.callback_query.message.chat.id }}"
+            }
+          ]
+        },
+        "options": {
+          "returnFirstMatch": true
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        544,
+        1552
+      ],
+      "id": "4b750c66-e815-437b-96e6-be434fb43e88",
+      "name": "Get the student's sheet 4",
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ZlndbaTPQNsXbUSh",
+          "name": "Google Sheets account"
+        }
+      },
+      "notes": "هذه العقدة تقوم باحضار معرف شيت الطالب "
+    },
+    {
+      "parameters": {
+        "jsCode": "const staticData = $getWorkflowStaticData(\"global\");\nconst triggerData = $('Telegram Trigger').first().json;\n\nlet chatId = \"\";\nlet isCallback = false;\nlet answer = \"\";\nlet messageId = \"\"; // متغير جديد لحفظ معرف رسالة الأزرار\n\nif (triggerData.callback_query) {\n    isCallback = true;\n    chatId = triggerData.callback_query.message.chat.id.toString();\n    answer = triggerData.callback_query.data;\n    messageId = triggerData.callback_query.message.message_id; // التقاط الرقم هنا\n} else if (triggerData.message) {\n    isCallback = false;\n    chatId = triggerData.message.chat.id.toString();\n} else {\n    return { json: { error: \"نوع رسالة غير مدعوم\" } };\n}\n\nif (!staticData[chatId] || !isCallback) {\n    staticData[chatId] = {\n        stage: 0,\n        task_status: \"\",\n        task_type: \"\",\n        lecture_number: \"\",\n        delay: \"\"\n    };\n} \nelse if (isCallback) {\n    let currentStage = staticData[chatId].stage;\n    \n    if (currentStage === 0) { staticData[chatId].task_status = answer; }\n    else if (currentStage === 1) { staticData[chatId].task_type = answer; }\n    else if (currentStage === 2) { staticData[chatId].lecture_number = answer; }\n    else if (currentStage === 3) { staticData[chatId].delay = answer; }\n    \n    if (currentStage < 4) { staticData[chatId].stage++; }\n}\n\n// أضفنا messageId ليكون متاحاً للعقدة التالية\nreturn {\n    json: {\n        chatId: chatId,\n        messageId: messageId, \n        isCallback: isCallback,\n        stage: staticData[chatId].stage,\n        task_status: staticData[chatId].task_status,\n        task_type: staticData[chatId].task_type,\n        lecture_number: staticData[chatId].lecture_number,\n        delay: staticData[chatId].delay\n    }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        96,
+        1168
+      ],
+      "id": "6e0a0065-7120-4513-af69-9336784b1a7d",
+      "name": "Code in JavaScript",
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "resource": "callback",
+        "queryId": "={{ $json.callback_query.id }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -352,
+        1136
+      ],
+      "id": "f9c008b7-c0c9-4e6e-bdc6-693ee173a4c7",
+      "name": "Answer Query a callback",
+      "webhookId": "680e1a9b-0419-4b76-b4b6-ee90c054d681",
+      "retryOnFail": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "ranUmHUIOQ01oUQl",
+          "name": "Myameen_bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1Vlf4Sn-5L8WD6SpJd74ZJycp9gisStFZycpBhoMP-9M",
+          "mode": "list",
+          "cachedResultName": "سجل المعرفات - IDs",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Vlf4Sn-5L8WD6SpJd74ZJycp9gisStFZycpBhoMP-9M/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "الورقة1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Vlf4Sn-5L8WD6SpJd74ZJycp9gisStFZycpBhoMP-9M/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "chat id": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+            "اسم الطالب ": "={{ $json[\"اسم الطالب \"] }}"
+          },
+          "matchingColumns": [
+            "اسم الطالب "
+          ],
+          "schema": [
+            {
+              "id": "اسم الطالب ",
+              "displayName": "اسم الطالب ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "السنة الدراسية ",
+              "displayName": "السنة الدراسية ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "معرف sheet",
+              "displayName": "معرف sheet",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "معرف التلغرام ",
+              "displayName": "معرف التلغرام ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "chat id",
+              "displayName": "chat id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -128,
+        1552
+      ],
+      "id": "d772afa7-d35e-4627-9f95-30074790e81e",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ZlndbaTPQNsXbUSh",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "editMessageText",
+        "chatId": "={{ $('Telegram Trigger').item.json.callback_query.message.chat.id }}",
+        "messageId": "={{ $('Telegram Trigger').item.json.callback_query.message.message_id }}",
+        "text": "={{ $('Telegram Trigger').item.json.callback_query.message.text }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -176,
+        1104
+      ],
+      "id": "617628f9-33bc-42eb-8422-d2edeed865be",
+      "name": "Edit a text message",
+      "webhookId": "3a177a80-acd0-46e2-8150-b4673aa7304d",
+      "credentials": {
+        "telegramApi": {
+          "id": "WGxVQu8GhaziOiHM",
+          "name": "Personal"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Callback query ?": {
+      "main": [
+        [
+          {
+            "node": "Answer Query a callback",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get the student's sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get the student's sheet": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "exist ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Callback query ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Defining the stage": {
+      "main": [
+        [
+          {
+            "node": "Mission Status",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Mission type",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Lecture Number",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "A delay?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get the student's sheet 4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [],
+        [],
+        []
+      ]
+    },
+    "exist ?": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a text message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append the student's sheet3": {
+      "main": [
+        [
+          {
+            "node": "Mission accomplished",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get the student's sheet 4": {
+      "main": [
+        [
+          {
+            "node": "Append the student's sheet3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mission Status": {
+      "main": [
+        []
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Defining the stage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Answer Query a callback": {
+      "main": [
+        [
+          {
+            "node": "Edit a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit a text message": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "errorWorkflow": "BwhUh9P1ZooDmHvF"
+  },
+  "versionId": "0288002b-581d-4828-b2ee-7babbc7e9928",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "32315b50c4f1bd068ad6665008609f971133fa2270775ea30a3ec8446bd8943e"
+  },
+  "id": "Kx1B7xMBKf2Y5Jv6",
+  "tags": [
+    {
+      "updatedAt": "2026-09-16T16:52:11.590Z",
+      "createdAt": "2026-09-16T16:52:11.590Z",
+      "id": "h8Be99SlCk2njUvY",
+      "name": "google sheet"
+    },
+    {
+      "updatedAt": "2026-09-16T16:51:57.325Z",
+      "createdAt": "2026-09-16T16:51:57.325Z",
+      "id": "F1QJYnQY4vDgL6Pi",
+      "name": "telegram"
+    },
+    {
+      "updatedAt": "2026-09-16T16:52:28.188Z",
+      "createdAt": "2026-09-16T16:52:28.188Z",
+      "id": "9Mn2nrTYMCCisQet",
+      "name": "team"
+    }
+  ]
+}
