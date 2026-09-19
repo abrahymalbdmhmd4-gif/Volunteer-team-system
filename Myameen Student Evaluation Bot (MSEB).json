@@ -13,7 +13,7 @@
           "conditions": [
             {
               "id": "d96e17f6-66c7-4b97-9e38-761295ba79fe",
-              "leftValue": "={{ $json.callback_query.data }}",
+              "leftValue": "={{ $('Telegram Trigger').item.json.callback_query.id }}",
               "rightValue": "",
               "operator": {
                 "type": "string",
@@ -29,8 +29,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        -576,
-        1360
+        -976,
+        1584
       ],
       "id": "5a9126f5-830c-4dd2-8251-46cbdd3bf9c1",
       "name": "Callback query ?",
@@ -56,8 +56,8 @@
         "filtersUI": {
           "values": [
             {
-              "lookupColumn": "معرف التلغرام ",
-              "lookupValue": "={{ $json.message.from.username }}"
+              "lookupColumn": "chat id",
+              "lookupValue": "={{ $('Telegram Trigger').item.json.message.chat.id }}"
             }
           ]
         },
@@ -68,8 +68,8 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        -352,
-        1456
+        -752,
+        1680
       ],
       "id": "e317897f-4a8f-4dfa-91d9-359786238638",
       "name": "Get the student's sheet",
@@ -92,8 +92,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        96,
-        1360
+        -304,
+        1584
       ],
       "id": "81e1e59f-dd7f-417e-8910-f765084ea055",
       "name": "Send a text message1",
@@ -110,7 +110,7 @@
     {
       "parameters": {
         "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
-        "text": "=اهلا وسهلا {{ $('Telegram Trigger').item.json.message.from.first_name }}, ماهي حالة المهمة التي تعمل عليها؟ ",
+        "text": "=اهلا وسهلا ماهي حالة المهمة التي تعمل عليها؟ ",
         "replyMarkup": "inlineKeyboard",
         "inlineKeyboard": {
           "rows": [
@@ -139,8 +139,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        544,
-        784
+        144,
+        1008
       ],
       "id": "46b69f6b-2295-4200-8124-b1100861c4cd",
       "name": "Mission Status",
@@ -234,8 +234,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        544,
-        976
+        368,
+        1200
       ],
       "id": "0ca17fd3-5e1f-4432-880d-4dc07785f4cf",
       "name": "Mission type",
@@ -259,8 +259,8 @@
       "type": "n8n-nodes-base.telegramTrigger",
       "typeVersion": 1.2,
       "position": [
-        -800,
-        1360
+        -1200,
+        1584
       ],
       "id": "7783b5f0-c37f-467e-9055-76b45090f598",
       "name": "Telegram Trigger",
@@ -394,8 +394,8 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.4,
       "position": [
-        320,
-        1120
+        -80,
+        1344
       ],
       "id": "e7c9c0ef-f9cd-4efb-913b-fc560571c2c0",
       "name": "Defining the stage",
@@ -565,8 +565,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        544,
-        1168
+        368,
+        1392
       ],
       "id": "4c497e71-1f12-448f-a32f-62ad54adb331",
       "name": "Lecture Number",
@@ -611,8 +611,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        544,
-        1360
+        368,
+        1584
       ],
       "id": "514fad33-4099-4ae6-84d6-dd852514fa88",
       "name": "A delay?",
@@ -634,8 +634,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        992,
-        1552
+        1040,
+        1776
       ],
       "id": "82edced2-ce46-4606-a29a-647f5ba9251b",
       "name": "Mission accomplished",
@@ -676,8 +676,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        -128,
-        1360
+        -528,
+        1584
       ],
       "id": "9732f627-89ec-4459-a455-fe83a624c97e",
       "name": "exist ?",
@@ -685,7 +685,7 @@
     },
     {
       "parameters": {
-        "operation": "appendOrUpdate",
+        "operation": "append",
         "documentId": {
           "__rl": true,
           "value": "={{ $json[\"معرف sheet\"] }}",
@@ -852,8 +852,8 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        768,
-        1552
+        592,
+        1776
       ],
       "id": "26ffb193-caba-4a56-bcea-16e7c726e56e",
       "name": "Append the student's sheet3",
@@ -885,7 +885,7 @@
         "filtersUI": {
           "values": [
             {
-              "lookupColumn": "معرف التلغرام ",
+              "lookupColumn": "chat id",
               "lookupValue": "={{ $('Telegram Trigger').item.json.callback_query.message.chat.id }}"
             }
           ]
@@ -897,8 +897,8 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        544,
-        1552
+        368,
+        1776
       ],
       "id": "4b750c66-e815-437b-96e6-be434fb43e88",
       "name": "Get the student's sheet 4",
@@ -914,40 +914,17 @@
     },
     {
       "parameters": {
-        "jsCode": "const staticData = $getWorkflowStaticData(\"global\");\nconst triggerData = $('Telegram Trigger').first().json;\n\nlet chatId = \"\";\nlet isCallback = false;\nlet answer = \"\";\nlet messageId = \"\"; // متغير جديد لحفظ معرف رسالة الأزرار\n\nif (triggerData.callback_query) {\n    isCallback = true;\n    chatId = triggerData.callback_query.message.chat.id.toString();\n    answer = triggerData.callback_query.data;\n    messageId = triggerData.callback_query.message.message_id; // التقاط الرقم هنا\n} else if (triggerData.message) {\n    isCallback = false;\n    chatId = triggerData.message.chat.id.toString();\n} else {\n    return { json: { error: \"نوع رسالة غير مدعوم\" } };\n}\n\nif (!staticData[chatId] || !isCallback) {\n    staticData[chatId] = {\n        stage: 0,\n        task_status: \"\",\n        task_type: \"\",\n        lecture_number: \"\",\n        delay: \"\"\n    };\n} \nelse if (isCallback) {\n    let currentStage = staticData[chatId].stage;\n    \n    if (currentStage === 0) { staticData[chatId].task_status = answer; }\n    else if (currentStage === 1) { staticData[chatId].task_type = answer; }\n    else if (currentStage === 2) { staticData[chatId].lecture_number = answer; }\n    else if (currentStage === 3) { staticData[chatId].delay = answer; }\n    \n    if (currentStage < 4) { staticData[chatId].stage++; }\n}\n\n// أضفنا messageId ليكون متاحاً للعقدة التالية\nreturn {\n    json: {\n        chatId: chatId,\n        messageId: messageId, \n        isCallback: isCallback,\n        stage: staticData[chatId].stage,\n        task_status: staticData[chatId].task_status,\n        task_type: staticData[chatId].task_type,\n        lecture_number: staticData[chatId].lecture_number,\n        delay: staticData[chatId].delay\n    }\n};"
+        "jsCode": "const TIMEOUT_MS = 2 * 60 * 60 * 1000; // ساعتين\n\nconst staticData = $getWorkflowStaticData(\"global\");\nconst triggerData = $('Telegram Trigger').first().json;\n\nlet chatId = \"\";\nlet isCallback = false;\nlet answer = \"\";\nlet messageId = \"\";\n\nif (triggerData.callback_query) {\n    isCallback = true;\n    chatId = triggerData.callback_query.message.chat.id.toString();\n    answer = triggerData.callback_query.data;\n    messageId = triggerData.callback_query.message.message_id;\n} else if (triggerData.message) {\n    isCallback = false;\n    chatId = triggerData.message.chat.id.toString();\n} else {\n    return { json: { error: \"نوع رسالة غير مدعوم\" } };\n}\n\nconst now = Date.now();\nconst existing = staticData[chatId];\n\nfunction freshSession() {\n    return {\n        stage: 0,\n        task_status: \"\",\n        task_type: \"\",\n        lecture_number: \"\",\n        delay: \"\",\n        lastClick: \"\",\n        lastActivity: now\n    };\n}\n\nif (!isCallback) {\n    const timedOut = existing && (now - (existing.lastActivity || 0) > TIMEOUT_MS);\n    const noActiveSession = !existing || existing.stage === 0 || existing.stage === 4 || timedOut;\n\n    if (noActiveSession) {\n        staticData[chatId] = freshSession();\n    }\n    // وإلا (في جلسة نشطة حقيقية بالمنتصف)، ما بنلمس شي إطلاقًا\n}\nelse if (isCallback) {\n    if (!existing) {\n        staticData[chatId] = freshSession();\n    } else {\n        const timedOut = now - (existing.lastActivity || 0) > TIMEOUT_MS;\n\n        if (timedOut) {\n            staticData[chatId] = freshSession();\n        } else {\n            let currentStage = existing.stage;\n            const clickFingerprint = messageId + \"_\" + answer;\n\n            if (existing.lastClick === clickFingerprint) {\n                return {\n                    json: {\n                        chatId: chatId,\n                        messageId: messageId,\n                        isCallback: isCallback,\n                        stage: existing.stage,\n                        task_status: existing.task_status,\n                        task_type: existing.task_type,\n                        lecture_number: existing.lecture_number,\n                        delay: existing.delay,\n                        duplicate: true\n                    }\n                };\n            }\n\n            existing.lastActivity = now;\n            existing.lastClick = clickFingerprint;\n\n            if (currentStage === 0) { existing.task_status = answer; }\n            else if (currentStage === 1) { existing.task_type = answer; }\n            else if (currentStage === 2) { existing.lecture_number = answer; }\n            else if (currentStage === 3) { existing.delay = answer; }\n\n            if (currentStage < 4) { existing.stage++; }\n        }\n    }\n}\n\nreturn {\n    json: {\n        chatId: chatId,\n        messageId: messageId,\n        isCallback: isCallback,\n        stage: staticData[chatId].stage,\n        task_status: staticData[chatId].task_status,\n        task_type: staticData[chatId].task_type,\n        lecture_number: staticData[chatId].lecture_number,\n        delay: staticData[chatId].delay\n    }\n};"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        96,
-        1168
+        -304,
+        1392
       ],
       "id": "6e0a0065-7120-4513-af69-9336784b1a7d",
       "name": "Code in JavaScript",
       "retryOnFail": true
-    },
-    {
-      "parameters": {
-        "resource": "callback",
-        "queryId": "={{ $json.callback_query.id }}",
-        "additionalFields": {}
-      },
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.2,
-      "position": [
-        -352,
-        1136
-      ],
-      "id": "f9c008b7-c0c9-4e6e-bdc6-693ee173a4c7",
-      "name": "Answer Query a callback",
-      "webhookId": "680e1a9b-0419-4b76-b4b6-ee90c054d681",
-      "retryOnFail": true,
-      "credentials": {
-        "telegramApi": {
-          "id": "ranUmHUIOQ01oUQl",
-          "name": "Myameen_bot"
-        }
-      }
     },
     {
       "parameters": {
@@ -1032,8 +1009,8 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        -128,
-        1552
+        -528,
+        1776
       ],
       "id": "d772afa7-d35e-4627-9f95-30074790e81e",
       "name": "Append or update row in sheet",
@@ -1046,30 +1023,186 @@
     },
     {
       "parameters": {
-        "operation": "editMessageText",
-        "chatId": "={{ $('Telegram Trigger').item.json.callback_query.message.chat.id }}",
-        "messageId": "={{ $('Telegram Trigger').item.json.callback_query.message.message_id }}",
-        "text": "={{ $('Telegram Trigger').item.json.callback_query.message.text }}",
+        "jsCode": "const staticData = $getWorkflowStaticData(\"global\");\nconst chatId = $('Code in JavaScript').item.json.chatId;\n\ndelete staticData[chatId];\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        816,
+        1776
+      ],
+      "id": "a9af1998-6c0a-47ef-84f0-5437e3583c89",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "resource": "callback",
+        "queryId": "={{ $('Telegram Trigger').item.json.callback_query.id }}",
         "additionalFields": {}
       },
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        -176,
-        1104
+        -528,
+        1296
       ],
-      "id": "617628f9-33bc-42eb-8422-d2edeed865be",
-      "name": "Edit a text message",
-      "webhookId": "3a177a80-acd0-46e2-8150-b4673aa7304d",
+      "id": "50d37dc3-412a-4b3b-9c7d-068d59929fab",
+      "name": "Answer Query a callback",
+      "webhookId": "680e1a9b-0419-4b76-b4b6-ee90c054d681",
+      "retryOnFail": true,
       "credentials": {
         "telegramApi": {
-          "id": "WGxVQu8GhaziOiHM",
-          "name": "Personal"
+          "id": "ranUmHUIOQ01oUQl",
+          "name": "Myameen_bot"
         }
       }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.telegram.org/bot8682033760:AAF_L1j1imI8NRpQB1WKuEhJPawFJPmgJas/editMessageReplyMarkup",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"chat_id\": \"{{ $('Code in JavaScript').item.json.chatId }}\",\n  \"message_id\": {{ $('Code in JavaScript').item.json.messageId }},\n  \"reply_markup\": { \"inline_keyboard\": [] }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        144,
+        1200
+      ],
+      "id": "df5f18b7-2665-4e8c-9e33-7f0847808b94",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.telegram.org/bot8682033760:AAF_L1j1imI8NRpQB1WKuEhJPawFJPmgJas/editMessageReplyMarkup",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"chat_id\": \"{{ $('Code in JavaScript').item.json.chatId }}\",\n  \"message_id\": {{ $('Code in JavaScript').item.json.messageId }},\n  \"reply_markup\": { \"inline_keyboard\": [] }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        144,
+        1392
+      ],
+      "id": "8edcee13-b5e1-4f50-a384-65d73610da3e",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.telegram.org/bot8682033760:AAF_L1j1imI8NRpQB1WKuEhJPawFJPmgJas/editMessageReplyMarkup",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"chat_id\": \"{{ $('Code in JavaScript').item.json.chatId }}\",\n  \"message_id\": {{ $('Code in JavaScript').item.json.messageId }},\n  \"reply_markup\": { \"inline_keyboard\": [] }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        144,
+        1584
+      ],
+      "id": "6302f42c-15e4-4dfe-89fe-cfa84ad8c1f8",
+      "name": "HTTP Request2"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.telegram.org/bot8682033760:AAF_L1j1imI8NRpQB1WKuEhJPawFJPmgJas/editMessageReplyMarkup",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"chat_id\": \"{{ $('Code in JavaScript').item.json.chatId }}\",\n  \"message_id\": {{ $('Code in JavaScript').item.json.messageId }},\n  \"reply_markup\": { \"inline_keyboard\": [] }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        144,
+        1776
+      ],
+      "id": "14814725-ce95-40d7-b1fb-e5c9fe3ecea5",
+      "name": "HTTP Request3"
     }
   ],
-  "pinData": {},
+  "pinData": {
+    "Telegram Trigger": [
+      {
+        "json": {
+          "update_id": 955216118,
+          "callback_query": {
+            "id": "5030649877638499088",
+            "from": {
+              "id": 5466256745,
+              "is_bot": false,
+              "first_name": "Mohamad",
+              "last_name": "Ibrahim Alabed",
+              "username": "M20AML33",
+              "language_code": "en"
+            },
+            "message": {
+              "message_id": 313,
+              "from": {
+                "id": 8682033760,
+                "is_bot": true,
+                "first_name": "بوت التقييم | ميامين",
+                "username": "MyameenBot"
+              },
+              "chat": {
+                "id": 5466256745,
+                "first_name": "Mohamad",
+                "last_name": "Ibrahim Alabed",
+                "username": "M20AML33",
+                "type": "private"
+              },
+              "date": 1789858923,
+              "text": "اهلا وسهلا ماهي حالة المهمة التي تعمل عليها؟ \n\nThis message was sent automatically with n8n",
+              "entities": [
+                {
+                  "offset": 47,
+                  "length": 41,
+                  "type": "italic"
+                },
+                {
+                  "offset": 88,
+                  "length": 3,
+                  "type": "text_link",
+                  "url": "https://n8n.io/?utm_source=n8n-internal&utm_medium=powered_by&utm_campaign=n8n-nodes-base.telegram_32315b50c4f1bd068ad6665008609f971133fa2270775ea30a3ec8446bd8943e"
+                }
+              ],
+              "link_preview_options": {
+                "is_disabled": true
+              },
+              "reply_markup": {
+                "inline_keyboard": [
+                  [
+                    {
+                      "text": "تمت بنجاح ",
+                      "callback_data": "done"
+                    },
+                    {
+                      "text": "لم تتم بعد ",
+                      "callback_data": "not done"
+                    }
+                  ]
+                ]
+              }
+            },
+            "chat_instance": "-5548731351049767776",
+            "data": "done"
+          }
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
   "connections": {
     "Callback query ?": {
       "main": [
@@ -1127,28 +1260,28 @@
         ],
         [
           {
-            "node": "Mission type",
+            "node": "HTTP Request",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Lecture Number",
+            "node": "HTTP Request1",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "A delay?",
+            "node": "HTTP Request2",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Get the student's sheet 4",
+            "node": "HTTP Request3",
             "type": "main",
             "index": 0
           }
@@ -1180,7 +1313,7 @@
       "main": [
         [
           {
-            "node": "Mission accomplished",
+            "node": "Code in JavaScript1",
             "type": "main",
             "index": 0
           }
@@ -1214,18 +1347,18 @@
         ]
       ]
     },
-    "Answer Query a callback": {
+    "Code in JavaScript1": {
       "main": [
         [
           {
-            "node": "Edit a text message",
+            "node": "Mission accomplished",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Edit a text message": {
+    "Answer Query a callback": {
       "main": [
         [
           {
@@ -1235,9 +1368,53 @@
           }
         ]
       ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Mission type",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Lecture Number",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request2": {
+      "main": [
+        [
+          {
+            "node": "A delay?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request3": {
+      "main": [
+        [
+          {
+            "node": "Get the student's sheet 4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1",
     "timeSavedMode": "fixed",
@@ -1245,7 +1422,7 @@
     "availableInMCP": false,
     "errorWorkflow": "BwhUh9P1ZooDmHvF"
   },
-  "versionId": "0288002b-581d-4828-b2ee-7babbc7e9928",
+  "versionId": "cdde428b-83db-4830-9347-99e71af6a826",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "32315b50c4f1bd068ad6665008609f971133fa2270775ea30a3ec8446bd8943e"
